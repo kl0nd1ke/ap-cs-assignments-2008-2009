@@ -1,0 +1,7 @@
+Steps:
+
+1) Let the number be referred to as N and the number it is to be divided by as P.
+2) Divide N by P; initially, P = 2. If P = N, then go to step 5.
+3) If the answer from step 2 is not a whole number, go to step 2 and increase the value of P by 1.
+4) If the answer from step 2 is a whole number, then N is not prime.
+4) N is prime.

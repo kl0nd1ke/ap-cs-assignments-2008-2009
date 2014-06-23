@@ -1,0 +1,104 @@
++++++++ Part 1 +++++++
+
+Do You Know? Set 1
+1. The bug does not always move to a new location - if it reaches an obstacle (i.e. rock) it has to turn first before it can move again.
+2. The bug moves forward, if possible - otherwise, it performs a clockwise turn until it can move forward again.
+3. The bug turns clockwise 45 degrees if it does not move.
+4. The bug leaves behind a flower of its color when it moves.
+5. When the bug is at the edge of the grid it keeps following the edge of the grid, turning clockwise if necessary to continue moving.
+6. If a rock is directly in front of a bug, the bug turns clockwise 45 degrees until it finds an unobstructed path in which to move.
+7. A flower does not move.
+8. The flower's behavior consists of slowly fading from the color of the bug that created it to black.
+9. A rock has no noticeable behavior. It neither moves nor changes color.
+10. Only one actor can be in the same location in the grid.
+
+Exercises
+1. 45 degrees: northeast
+90 degrees: east
+135 degrees: southeast
+180 degrees: south
+225 degrees: southwest
+270 degrees: west
+315 degrees: northwest
+360 degrees: north
+2. The bug can be moved any distance in any direction (as long as the coordinates provided are inside the grid). If coordinates that are outside of the grid are provided, an IllegalArgumentException is thrown.
+3. The setColor method (inherited from the actor class) is used to change the color of an actor.
+4. The bug disappeared - since only one actor can inhabit a given space in the grid, the rock overwrote the bug.
+
++++++++ End of Part 1 +++++++
+
+=================================================
+
++++++++ Part 2 +++++++
+
+Do You Know? Set 2
+1. The sideLength instance variable keeps track of how wide / long the square traced by the bug is.
+2. The steps instance variable keeps track of how many spaces the bug has moved since the last time it turned a corner.
+3. The turn method is called twice when steps becomes equal to sideLength because one call of the turn method only turns the bug 45 degrees. Two calls of the turn method, however, turn the bug 90 degrees clockwise, which is the angle necessary for the bug to continue moving in the path of the square.
+4. The move method can be called because it is inherited from the Bug class, even though code for it does not appear in the BoxBug class.
+5. The size of the BoxBug's square pattern will always be the same, because after sideLength is defined in the BoxBug constructor, there is no method that changes or can change sideLength.
+6. The path a BoxBug travels can change, provided that somewhere along its path it runs into an obstacle (i.e. another bug). If this occurs, the bug will find another suitable square path of the same size and will move in that path indefinitely (or until it runs into another obstacle).
+7. The value of steps will be zero right after the BoxBug reaches a corner and turns the corner but doesn't yet move into the next position.
+
+Exercises
+1. (See CircleBug class for code) Instead of turning 90 degrees clockwise at each corner, it turns only 45 degrees. Thus, instead of following a square path, the CircleBug follows a roughly circular path, or, more accurately, follows an octagon-shaped path (8 sides, 135 degree angles instead of 90 degree angles).
+2. (See SpiralBug class for code)
+3. (See ZBug class for code)
+4. (See DancingBug class for code)
+5. Add the following lines of code somewhere before "world.show();" (the numbers 5, 2, and 4 used below are arbitrary):
+   BoxBug johnny = new BoxBug(5);
+   world.add(new Location(2, 4), johnny);
+
++++++++ End of Part 2 +++++++
+
+=================================================
+
++++++++ Part 3 +++++++
+
+Do You Know? Set 3
+1. The row value for loc1 can be accessed with the following: loc1.getRow();
+2. The given statement would set b to false.
+3. The given statement would set loc 3 to (4, 4).
+4. The given statement would set dir to 135.
+5. The getAdjacentLocation method knows which adjacent location to return based on its argument (i.e. if it is passed Location.EAST it will look for the adjacent location at 90 degrees clockwise, or the location directly to the right).
+
+Do You Know? Set 4
+1. To obtain a count of the objects in a grid, we can call the getOccupiedLocations() method of the grid interface and get the size of the ArrayList that is returned.
+2. To check if location (10, 10) is in a grid, we can call the isValid method and pass "new Location(10, 10)" to it. If the boolean value returned by the method is true, then the location is in the grid.
+3. The implementations of these methods can be found in both BoundedGrid and UnboundedGrid, although the specific code is different in each implementation of the Grid interface.
+4. I think that returning the objects in an ArrayList is the better design, because an ArrayList is more versatile than an array - elements can readily be removed or added if necessary without a hassle (arrays have fixed length, ArrayLists do not).
+
+Do You Know? Set 5
+1. Three properties of every actor: color, location, and direction.
+2. When an actor is constructed, its direction is north (0 degrees) and its color is blue.
+3. I think the Actor class was created as a class rather than an interface in order to allow the storage of the private variables color, location, and direction. That is, if Actor is a class, it can define the three properties it has, which are inherited by any classes that extend it.
+4. An actor cannot put itself into a grid twice without first removing itself - an IllegalStateException is thrown: "This actor is already contained in a grid". An actor cannot remove itself from the grid twice - an IllegalStateException is thrown: "This actor is not contained in a grid". An actor CAN be placed in a grid, remove itself, and put itself back.
+5. An actor can turn 90 degrees to the right by calling setDirection(getDirection() + Location.RIGHT).
+
+Do You Know? Set 6
+1. The following statements ensure that a bug does not try to move out of its grid: 
+   if (!gr.isValid(next)) 
+      return false;
+2. The following statements determine that a bug will not walk into a rock: 
+   Actor neighbor = gr.get(next);
+   return (neighbor == null) || (neighbor instanceof Flower);
+3. The following methods of the Grid interface are invoked by the canMove method:
+   isValid(Location loc) is called in order to check whether the next location is in the grid or not.
+   get(Location loc) is called in order to store the object that inhabits the next location, if any.
+4. The getAdjacentLocation() method is called in order to get the location in the direction the bug is facing (i.e. getDirection()).
+5. The following methods inherited from the Actor class are invoked in the canMove method:
+   getGrid()
+   getLocation()
+   getDirection()
+6. When the location directly in front of the bug is outside of the grid, the bug removes itself from the grid (this happens in the move method - the bug actually turns if it reaches the edge, unless it is forced to move).
+7. The variable loc is not needed in the move method and could be avoided by calling getLocation() multiple times, but using loc as a separate variable clarifies the code and makes it easier to follow and understand.
+8. The flowers that are dropped by a bug have the same color as the bug because of the getColor() method call in the following statements (which in this code gets color of the bug and makes a new flower of that color):
+   Flower flower = new Flower(getColor());
+   flower.putSelfInGrid(gr, loc);
+9. When a bug removes itself from the grid, it WILL place a flower into its previous location.
+10. (See the answer to question 8 above)
+11. If a bug needs to turn 180 degrees, it should call the turn method 4 times (4 * 45 = 180).
+
+Group Activity (See Jumper class)
+
++++++++ End of Part 3 +++++++
